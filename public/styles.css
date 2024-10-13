@@ -1,0 +1,75 @@
+/* Устанавливаем фоновое изображение для страницы с классом .library-page */
+.library-page {
+    background-image: url('./images/library.jpg'); /* Путь к изображению */
+    background-size: cover; /* Фоновая картинка растягивается на весь экран */
+    background-position: center; /* Центрируем картинку */
+    background-repeat: no-repeat; /* Отключаем повторение изображения */
+    height: 100vh; /* Высота страницы на весь экран */
+    margin: 0; /* Убираем отступы */
+    color: white; /* Белый цвет текста для контраста с фоном */
+    font-family: Arial, sans-serif; /* Шрифт */
+}
+table {
+    width: 100%;              /* Таблица на всю ширину */
+    border-collapse: collapse; /* Убираем промежутки между ячейками */
+    margin-top: 20px;
+    background-color: black; /* Фон таблицы черный */
+    color: white;             /* Цвет текста белый */
+}
+
+th, td {
+    border: 1px solid white;  /* Белая рамка для ячеек */
+    padding: 8px;             /* Отступы внутри ячеек */
+    text-align: left;         /* Выравнивание текста по левому краю */
+}
+
+th {
+    background-color: #f4f4f4; /* Светлый фон для заголовков таблицы */
+    font-weight: bold;
+}
+
+td {
+    background-color: #fff;    /* Белый фон для ячеек */
+}
+
+.book-button {
+    background: none;
+    border: none;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.book-button:hover {
+    color: darkblue;
+}
+
+.filter-button {
+    display: inline-block;       /* Делает элемент блочным, чтобы применить размеры */
+    padding: 10px 20px;          /* Внутренние отступы для увеличения кнопки */
+    font-size: 18px;             /* Увеличиваем размер текста */
+    border: 2px solid black;     /* Рамка вокруг кнопки */
+    background-color: #040101;   /* Цвет фона кнопки */
+    color: #fafafa;                /* Цвет текста */
+    text-decoration: none;       /* Убираем подчеркивание ссылки */
+    margin-top: 20px;            /* Отступ сверху для отступа от таблицы */
+    cursor: pointer;             /* Курсор в виде руки при наведении */
+}
+
+
+.add-book-button {
+    display: inline-block;       /* Делает элемент блочным, чтобы применить размеры */
+    padding: 10px 20px;          /* Внутренние отступы для увеличения кнопки */
+    font-size: 18px;             /* Увеличиваем размер текста */
+    border: 2px solid black;     /* Рамка вокруг кнопки */
+    background-color: #040101;   /* Цвет фона кнопки */
+    color: #fafafa;                /* Цвет текста */
+    text-decoration: none;       /* Убираем подчеркивание ссылки */
+    margin-top: 20px;            /* Отступ сверху для отступа от таблицы */
+    cursor: pointer;             /* Курсор в виде руки при наведении */
+}
+
+.add-book-button:hover {
+    background-color: #ddd;      /* Изменяем цвет фона при наведении */
+}
+
