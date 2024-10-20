@@ -1,35 +1,34 @@
-/* Устанавливаем фоновое изображение для страницы с классом .library-page */
 .library-page {
-    background-image: url('./images/library.jpg'); /* Путь к изображению */
-    background-size: cover; /* Фоновая картинка растягивается на весь экран */
-    background-position: center; /* Центрируем картинку */
-    background-repeat: no-repeat; /* Отключаем повторение изображения */
-    height: 100vh; /* Высота страницы на весь экран */
-    margin: 0; /* Убираем отступы */
-    color: white; /* Белый цвет текста для контраста с фоном */
-    font-family: Arial, sans-serif; /* Шрифт */
+    background-image: url('./images/library.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    margin: 0;
+    color: white;
+    font-family: Arial, sans-serif;
 }
 table {
-    width: 100%;              /* Таблица на всю ширину */
-    border-collapse: collapse; /* Убираем промежутки между ячейками */
+    width: 100%;
+    border-collapse: collapse;
     margin-top: 20px;
-    background-color: black; /* Фон таблицы черный */
-    color: white;             /* Цвет текста белый */
+    background-color: black;
+    color: white;
 }
 
 th, td {
-    border: 1px solid white;  /* Белая рамка для ячеек */
-    padding: 8px;             /* Отступы внутри ячеек */
-    text-align: left;         /* Выравнивание текста по левому краю */
+    border: 1px solid white;
+    padding: 8px;
+    text-align: left;
 }
 
 th {
-    background-color: #f4f4f4; /* Светлый фон для заголовков таблицы */
+    background-color: #f4f4f4;
     font-weight: bold;
 }
 
 td {
-    background-color: #fff;    /* Белый фон для ячеек */
+    background-color: #fff;
 }
 
 .book-button {
@@ -45,31 +44,35 @@ td {
 }
 
 .filter-button {
-    display: inline-block;       /* Делает элемент блочным, чтобы применить размеры */
-    padding: 10px 20px;          /* Внутренние отступы для увеличения кнопки */
-    font-size: 18px;             /* Увеличиваем размер текста */
-    border: 2px solid black;     /* Рамка вокруг кнопки */
-    background-color: #040101;   /* Цвет фона кнопки */
-    color: #fafafa;                /* Цвет текста */
-    text-decoration: none;       /* Убираем подчеркивание ссылки */
-    margin-top: 20px;            /* Отступ сверху для отступа от таблицы */
-    cursor: pointer;             /* Курсор в виде руки при наведении */
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: 2px solid black;
+    background-color: #040101;
+    color: #fafafa;
+    text-decoration: none;
+    margin-top: 20px;
+    cursor: pointer;
 }
 
 
 .add-book-button {
-    display: inline-block;       /* Делает элемент блочным, чтобы применить размеры */
-    padding: 10px 20px;          /* Внутренние отступы для увеличения кнопки */
-    font-size: 18px;             /* Увеличиваем размер текста */
-    border: 2px solid black;     /* Рамка вокруг кнопки */
-    background-color: #040101;   /* Цвет фона кнопки */
-    color: #fafafa;                /* Цвет текста */
-    text-decoration: none;       /* Убираем подчеркивание ссылки */
-    margin-top: 20px;            /* Отступ сверху для отступа от таблицы */
-    cursor: pointer;             /* Курсор в виде руки при наведении */
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #040101;
+    color: #fafafa;
+    text-decoration: none;
+    margin-top: 20px;
+    cursor: pointer;
+    border: 2px solid white;
+    border-radius: 5px;
 }
 
 .add-book-button:hover {
-    background-color: #ddd;      /* Изменяем цвет фона при наведении */
+    background-color: #333;
 }
 
+@media(max-width: 800px) {
+
+}

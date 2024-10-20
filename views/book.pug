@@ -6,59 +6,46 @@ block content
     else
         h1 Добавить новую книгу
 
-    // Контейнер для формы и изображения обложки книги
     div(style="display: flex; align-items: flex-start; max-width: 1600px;")
 
-        // Форма для добавления/редактирования книги
         form(action=book ? `/book/${book.id}`: "/book", method="post", style="display: flex; flex-direction: column; max-width: 400px; flex-grow: 1;")
 
-            // Название книги
             label(for="title") Название
             input(type="text" id="title" name="title" value=book ? book.title : "" required style="margin-bottom: 10px;")
 
-            // Автор книги
             label(for="author") Автор
             input(type="text" id="author" name="author" value=book ? book.author : "" required style="margin-bottom: 10px;")
 
-            // Дата выпуска книги
             label(for="releaseDate") Дата выпуска
-            input(type="date" id="releaseDate" name="releaseDate" value=book ? book.releaseDate: "" required style="margin-bottom: 10px;")
+            input(type="date" id="releaseDate" name="releaseDate" value=(book && book.releaseDate ? book.releaseDate.split('-').reverse().join('-') : "") required style="margin-bottom: 10px;")
 
-            // Если книга не доступна, показываем поля для читателя и даты возврата
             if book
-                // Поле "Читатель"
                 label(for="borrower") Читатель
                 span(style="margin-bottom: 10px; display: block;" name = "borrower") #{book.borrower || 'Нет данных'}
 
-                // Поле "Дата возврата"
                 label(for="returnDate") Дата возврата
                 span(style="margin-bottom: 10px; display: block;" name = "returnDate") #{book.returnDate || 'Нет данных'}
 
 
-            // Кнопка сохранения
             button(type="submit" style="background-color: black; color: white; font-size: 20px; padding: 5px 10px; border: none; cursor: pointer;") Сохранить
 
-            // Если книга существует, добавляем кнопку для удаления книги
-            if book
-                form(action=`/book/${book.id}/delete` method="post" style="margin-top: 20px;")
-                    button(type="submit" style="background-color: black; color: white; font-size: 20px; padding: 5px 10px; border: none; cursor: pointer;" onclick="return confirmDeletion()") Удалить книгу
+            //// Если книга существует, добавляем кнопку для удаления книги
+            //if book
+            //    form(action=`/book/${book.id}/delete` method="post" style="margin-top: 20px;")
+            //        button(type="submit" style="background-color: black; color: white; font-size: 20px; padding: 5px 10px; border: none; cursor: pointer;" onclick="return confirmDeletion()" action=`/book/${book.id}/delete`) Удалить книгу
 
-        // Контейнер для обложки книги
         if book && book.coverImage
             div(style="flex-shrink: 0; margin-left: 20px;")
                 img(src=`/uploads/${book.coverImage}`, alt="Обложка книги", style="max-width: 400px; max-height: 700px; object-fit: cover;")
 
-        // Кнопка для забора книги, если книга доступна
         if book && book.available
             button(id="borrow-button", type="button" style="background-color: black; color: white; font-size: 20px; padding: 5px 10px; border: none; cursor: pointer; margin-top: 20px; width: 250px") Забрать книгу
-        // Кнопка для возврата книги, если книга не доступна
         if book && !book.available
             button(id="return-button", type="button" style="background-color: black; color: white; font-size: 20px; padding: 5px 10px; border: none; cursor: pointer; margin-top: 20px; width: 250px") Вернуть книгу
 
         if error
             div(style="color: white; font-size: 30px; margin-bottom: 20px; margin:10px; display: inline-block;") #{error}
 
-    // Модальное окно для ввода имени читателя и даты возврата
     if book
         div(id="borrowModal", style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); padding-top: 60px")
             div(style="background-color: grey; margin: auto; padding: 20px; width: 300px; height: 500px; border-radius: 10px; max-height: 200px")
@@ -86,47 +73,42 @@ block content
 
                 button(type="button" id="closeReturnModal" style="background-color: red; color: white; font-size: 16px; padding: 5px 10px; border: none; cursor: pointer; margin-top: 10px;") Закрыть
 
-    // Скрипт для управления модальными окнами
     script.
-        // Получаем элементы для модального окна забора книги
+        function confirmDeletion() {
+            return confirm("Вы уверены, что хотите удалить эту книгу?");
+        }
         var borrowModal = document.getElementById("borrowModal");
         var borrowBtn = document.getElementById("borrow-button");
         var closeBorrowModal = document.getElementById("closeModal");
 
-        // Получаем элементы для модального окна возврата книги
         var returnModal = document.getElementById("returnModal");
         var returnBtn = document.getElementById("return-button");
         var closeReturnModal = document.getElementById("closeReturnModal");
 
-        // Открываем модальное окно для забора книги
         if (borrowBtn) {
             borrowBtn.onclick = function () {
                 borrowModal.style.display = "block";
             }
         }
 
-        // Закрываем модальное окно для забора книги
         if (closeBorrowModal) {
             closeBorrowModal.onclick = function () {
                 borrowModal.style.display = "none";
             }
         }
 
-        // Открываем модальное окно для возврата книги
         if (returnBtn) {
             returnBtn.onclick = function () {
                 returnModal.style.display = "block";
             }
         }
 
-        // Закрываем модальное окно для возврата книги
         if (closeReturnModal) {
             closeReturnModal.onclick = function () {
                 returnModal.style.display = "none";
             }
         }
 
-        // Закрываем модальное окно, если пользователь кликает вне его области
         window.onclick = function (event) {
             if (event.target == borrowModal) {
                 borrowModal.style.display = "none";

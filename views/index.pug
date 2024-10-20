@@ -1,55 +1,181 @@
 extends layout
 
 block content
-    h1 Список книг
+    h1 Библиотека
 
-    form(id="filterForm", style="margin-bottom: 20px;" method="get")
-        label(for="available") Только доступные:
-        input(type="checkbox" id="available" name="available" value="true" checked=available)
+    label(class="filter-label" onclick="fetchBooks('/filters?available=true')") Доступные
+    label(class="filter-label" onclick="fetchBooks('/filters?overdue=true')" style="margin: 10px") Просроченные
+    label(class="filter-label" onclick="fetchBooks('/filters?')" style="margin: 10px") Очистить
 
-        label(for="overdue") Просроченные:
-        input(type="checkbox" id="overdue" name="overdue" value="true" checked=overdue)
-
-        button(type="submit" style="background-color: black; color: white; font-size: 16px; padding: 5px 10px; border: none; cursor: pointer;") Применить фильтр
-
-    if books.length > 0
-        // Контейнер для таблицы с прокруткой
-        div(style="overflow-y: auto; max-height: 400px; margin-left: 0; max-width: 1000px")
-            table(style="color: black; width: 100%; border-collapse: collapse;")
-                thead
+    div.container(style="max-height: 500px; overflow-y: auto; max-width: 1500px")
+        table.book-table
+            thead
+                tr(style="background-color:black")
+                    th(style="color:white;background-color:black") Название
+                    th(style="color:white;background-color:black") Автор
+                    th(style="color:white;background-color:black") Год
+                    th(style="color:white;background-color:black") Статус
+                    th(style="color:white;background-color:black") Дата возврата
+                    th(style="color:white;background-color:black")
+            tbody
+                each book in books
                     tr
-                        th(style="background-color: black; color: white;") Название книги
-                        th(style="background-color: black; color: white;") Автор
-                        th(style="background-color: black; color: white;") Статус
-                        th(style="background-color: black; color: white;") Дата возврата
-                        th(style="background-color: black; color: white;")
-                tbody
-                    each book in books
-                        tr
-                            td(style="background-color: black; color: white;")
-                                form(action=`/book/${book.id}` method="get")
-                                    button(type="submit" class="book-button" style="color: white; font-size: 18px;") #{book.title}
-                            td(style="background-color: black; color: white;") #{book.author}
-                            td(style="background-color: black; color: white;")
-                                if book.available
-                                    span В наличии
-                                else
-                                    span Выдано
-                            td(style="background-color: black; color: white;")
-                                if !book.available
-                                    span #{book.returnDate}
-                                else
-                                    span -
-                            td(style="background-color: black; color: white;")
-                                form(action=`/book/${book.id}/delete` method="post" style="display: inline-block; margin-left: 10px;")
-                                    button(type="submit" class="delete-button" style="background-color: black; color: white; font-size: 14px; padding: 5px 10px; border: none; cursor: pointer;" onclick="return confirmDeletion()") Удалить
+                        td(style="color:white;background-color:black")
+                            a(href=`/book/${book.id}` style="color: white; text-decoration: none;")
+                                i(class="fas fa-book-open")
+                                span(style="color: white; text-decoration: none;margin:3px").book-title= book.title
+                        td(style="color:white;background-color:black")= book.author
+                        td(style="color:white;background-color:black")= book.releaseDate
+                        td(style="color:white;background-color:black")= book.available ? "Доступна" : "Недоступна"
+                        td(style="color:white;background-color:black")= book.returnDate ? book.returnDate : "Нет"
+                        td(style="color:white;background-color:black")
+                            button(type="button" style = "background-color:black; color:white" class="delete-button" onclick=`showConfirmation('${book.id}')`)
+                                i(class="fa-solid fa-trash") Удалить
 
-    else
-        p Нет книг для отображения
+                            //form(id=`delete-form-${book.id}` style="display:none;" action=`/book/${book.id}/delete` method="POST")
+                            //    p.form-paragraph Вы уверены, что хотите удалить эту книгу?
+                            //    button(class="delete-book-button" type="submit") Да
+                            //    button(type="button" onclick=`hideConfirmation('${book.id}')`) Нет
 
-    a(href="/book/new" class="add-book-button") Добавить новую книгу
+    a(href="/book/new" class="add-book-button")
+        i(class="fas fa-plus-circle")
+        span(style="margin:5px") Добавить новую книгу
 
     script.
-        function confirmDeletion() {
-            return confirm("Вы уверены, что хотите удалить эту книгу?");
+
+        function showConfirmation(bookId) {
+            if (confirm("Вы уверены, что хотите удалить эту книгу?")){
+                fetch(`/book/${bookId}/delete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        updateBookList(data.books);
+                    })
+            }
+        }
+
+        function hideConfirmation(bookId) {
+            document.getElementById(`delete-form-${bookId}`).style.display = "none";
+        }
+
+        // фильтр
+        function fetchBooks(url) {
+            fetch(url, {method: "GET"})
+                .then(response => response.json())
+                .then(data => {
+                    updateBookList(data.books);
+                }).catch(error => console.log("Ошибка: ", error));
+        }
+
+        function updateBookList(books) {
+            const container = document.querySelector(".container");
+
+            container.innerHTML = '';
+
+            const table = document.createElement("table");
+            table.className = "book-table";
+
+            const thead = document.createElement("thead");
+            const headerRow = document.createElement("tr");
+            headerRow.innerHTML = `
+                <th style="color:white;background-color:black">Название</th>
+                <th style="color:white;background-color:black">Автор</th>
+                <th style="color:white;background-color:black">Год</th>
+                <th style="color:white;background-color:black">Статус</th>
+                <th style="color:white;background-color:black">Дата возврата</th>
+                <th style="color:white;background-color:black"></th>
+            `;
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            const tbody = document.createElement("tbody");
+
+            books.forEach(book => {
+                const row = document.createElement("tr");
+
+                const titleCell = document.createElement("td");
+                titleCell.innerHTML = `<a href="/book/${book.id}" style="color: white; text-decoration: none;">${book.title}</a>`;
+                titleCell.style.color = "white";
+                titleCell.style.backgroundColor = "black";
+
+                const authorCell = document.createElement("td");
+                authorCell.innerText = book.author;
+                authorCell.style.color = "white";
+                authorCell.style.backgroundColor = "black";
+
+                const releaseDateCell = document.createElement("td");
+                releaseDateCell.innerText = book.releaseDate;
+                releaseDateCell.style.color = "white";
+                releaseDateCell.style.backgroundColor = "black";
+
+                const statusCell = document.createElement("td");
+                statusCell.innerText = book.available ? "Доступна" : "Недоступна";
+                statusCell.style.color = "white";
+                statusCell.style.backgroundColor = "black";
+
+                const returnDateCell = document.createElement("td");
+                returnDateCell.innerText = book.returnDate ? book.returnDate : "Нет";
+                returnDateCell.style.color = "white";
+                returnDateCell.style.backgroundColor = "black";
+
+                const deleteCell = document.createElement("td");
+                deleteCell.innerHTML = `
+                    <button type="button" class="delete-button" style="background-color:black;color:white" onclick="showConfirmation('${book.id}')">
+                        <i class="fa-solid fa-trash"></i> Удалить
+                    </button>
+
+                    <form id="delete-form-${book.id}" style="display:none;" action="/book/${book.id}/delete" method="POST">
+                        <p class="form-paragraph">Вы уверены, что хотите удалить эту книгу?</p>
+                        <button class="delete-book-button" type="submit">Да</button>
+                        <button type="button" onclick="hideConfirmation('${book.id}')">Нет</button>
+                    </form>
+                `;
+                deleteCell.style.color = "white";
+                deleteCell.style.backgroundColor = "black";
+
+                row.appendChild(titleCell);
+                row.appendChild(authorCell);
+                row.appendChild(releaseDateCell);
+                row.appendChild(statusCell);
+                row.appendChild(returnDateCell);
+                row.appendChild(deleteCell);
+
+                tbody.appendChild(row);
+            });
+
+            table.appendChild(tbody);
+
+            container.appendChild(table);
+        }
+    style.
+        .filter-label {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: black;
+            color: white;
+            border: 2px solid white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .filter-label:hover {
+            background-color: #333;
+        }
+
+        .container {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid black;
+            padding: 10px;
+            margin-top: 20px;
         }
